@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: Pushing Meta-Continual Learning Algorithms to the Limit
-description: Meta-continual learning algorithms should be able to handle tasks with extended data streams compared to the traditional deep learning setting. These algorithms have not been applied to settings with extreme data streams, such as classification tasks with 1,000 classes, nor have they been compared to traditional continual learning algorithms. In this blog, we compare GeMCL and OML, two meta-continual algorithms trained on the CASIA dataset, against the REMIND continual learning algorithm and an Offline learner. We evaluate these methods on 1,000-way 10-shot classification tasks using the Omniglot and CASIA datasets.
+description: Meta-continual learning algorithms should be able to handle tasks with extended data streams compared to the traditional deep learning setting. These algorithms have not been applied to settings with extreme data streams, such as classification tasks with 1,000 classes, nor have they been compared to traditional continual learning algorithms. In this blog, we compare GeMCL and OML, two meta-continual algorithms trained on the CASIA dataset, against the REMIND continual learning algorithm and an Offline learner on 1,000-way 10-shot classification tasks using the Omniglot and CASIA datasets.
 date: 2026-04-27
 future: true
 htmlwidgets: true
