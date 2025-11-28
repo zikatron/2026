@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: Pushing Meta-Continual Learning Algorithms to the Limit
-description: Coming soon to a pull request near you!
+description: Meta-continual learning algorithms should be able to handle tasks with extended data streams compared to the traditional deep learning setting. These algorithms have not been applied to settings with extreme data streams, such as classification tasks with 1,000 classes, nor have they been compared to traditional continual learning algorithms. In this blog, we compare two meta-continual algorithms (GeMCL and OML) against REMIND and an Offline learner. All models are evaluated on 1,000-way 10-shot classification tasks using the Omniglot and CASIA datasets.
 date: 2026-04-27
 future: true
 htmlwidgets: true
