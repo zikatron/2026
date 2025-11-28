@@ -1,6 +1,6 @@
 ---
 layout: distill
-title: How well do the meta-CL algorithms perform at scale?
+title: Pushing Meta-Continual Learning Algorithms to the Limit
 description: Coming soon to a pull request near you!
 date: 2026-04-27
 future: true
@@ -69,25 +69,32 @@ _styles: >
 ---
 
 ## Introduction
-
 In traditional deep learning, models are often trained on the assumption that the data used to train and test the model is independently and identically distributed (IID) and the data distribution is stationary.
 In real-world settings, the assumption of stationarity is frequently violated, particularly in domains like healthcare, where the continuous emergence of novel diseases and treatment protocols leads to inherently non-stationary data distributions <d-cite key="singh_class-incremental_2023"></d-cite>.
-Or imagine a robot deployed to vacuum clean one's house it would be challenging to preprogram the robot to handle all possible scenarios in all households. 
-Ideally, deployed models should be capable of adapting to evolving data distributions, and support continual learning to acquire new skills post-deployment
-Naively fine-tuning can lead to updates where the model's parameters overwrite previously acquired knowledge, thereby impairing its ability to perform earlier-learned tasks.
-This phenomenon is known catastrophoic forgetting (CF)<d-cite key="mccloskey_catastrophic_1989"></d-cite>.
-One cannot simply the train the model from scratch (known as the Offline approach) as that is not ideal and computational expensive to do <d-cite key="verwimp_continual_2023"></d-cite>, especially if the new data is much smaller than the original data used to train the model.
+For instance, imagine a robot deployed to vacuum clean a house; it would be challenging to pre-program the robot to handle all possible scenarios in all households.
+Ideally, deployed models should be capable of adapting to evolving data distributions and support continual learning to acquire new skills post-deployment.
+Naive fine-tuning can lead to updates where the model's parameters overwrite previously acquired knowledge, thereby impairing its ability to perform earlier-learned tasks.
+This phenomenon is known as catastrophic forgetting (CF) <d-cite key="mccloskey_catastrophic_1989"></d-cite>.
+One cannot simply train the model from scratch (known as the Offline approach) as that is not ideal and is computationally expensive <d-cite key="verwimp_continual_2023"></d-cite>, especially if the new data is much smaller than the original data used to train the model.
 
 Continual Learning (CL) is one approach to tackling CF.
-CL is about learning new tasks sequentially without forgetting how to perform the old tasks, ideally without requiring access to data from earlier tasks.
-The goal of CL is to ensure that the update of model is done in a computationally efficient way and that the continual learner should perform as if it were trained with all the data available.
-However, Harun et al. <d-cite key="harun_how_2023"></d-cite> showed there are CL methods that are more computationally expensive than the Offline approach. They also mention CL algorithms tend to focus on mitgating CF but not on being computationally efficient.
+CL is about learning new tasks sequentially without forgetting how to perform old tasks, ideally without requiring access to data from earlier tasks.
+The goal of CL is to ensure that the update of the model is done in a computationally efficient way and that the continual learner performs as if it were trained with all the available data.
+However, Harun et al. <d-cite key="harun_how_2023"></d-cite> showed that there are CL methods that are more computationally expensive than the Offline approach. They also mention that CL algorithms tend to focus on mitigating CF but not on being computationally efficient.
 
-Meta-learning is a field focused on training models to learn how to learn. Meta-learning algorithms should ideally allow models to generalise to out-of-distribution (OOD) tasks and efficiently adapt to new tasks. The intersection between CL and meta-learning, known as meta-continual learning (meta-CL), is about learning to continually learn. In theory, meta-CL algorithms should be more sample efficient than CL methods and better able to handle large-scale classification tasks with many classes.
-Despite this promise, existing meta-CL methods such as Online-aware Meta-learning (OML) <d-cite key="khurram_javed_meta-learning_2019"></d-cite> and A Neuromodulated Meta-Learning Algorithm (ANML) <d-cite key="beaulieu_learning_2020"></d-cite> have been shown to be computationally inefficient when dealing with tasks involving hundreds classes <d-cite key="li_metaclbench_2025, kwon_lifelearner_2024"></d-cite> and still suffer from CF. This suggests that these algorithms cannot be realistically deployed in practice, as they do not perform well at scale.
-Generative meta-continual learning (GeMCL) <d-cite key="mohammadamin_banayeeanzade_generative_2021"></d-cite>, however, is a meta-CL algorithm that is theoretically immune CF and has been shown to be superior to OML and ANML in terms of both performance and efficiency. GeMCL has not 
+Meta-learning is a field focused on training models to learn how to learn. Meta-learning algorithms should ideally allow models to generalise to out-of-distribution tasks and efficiently adapt to new tasks. The intersection between CL and meta-learning, known as meta-continual learning (meta-CL), is about learning to continually learn. In theory, meta-CL algorithms should be more sample efficient than CL methods and better able to do well on tasks with long streams—for example, classification tasks with 1,000 classes.
 
-The purpose of this blog is to compare the meta-CL algorithm GeMCL to the CL algorithm REMIND [cite] on the CASIA database on a 1000-way-10-shot task. We aim to see whether there are any benefits to using meta-learning approaches or whether one should simply stick to standard CL methods at scale. The roadmap to our destination is as follows: we first begin by explaining what CL is and introduce the REMIND algorithm, which has been shown to be computationally efficient compared to other CL algorithms [cite]. Our next stop covers meta-learning and the meta-CL algorithm GeMCL. Following that, we conduct experiments on the 1000-way-10-shot task. Finally, we conclude our journey.
+However, existing meta-CL methods such as Online-aware Meta-learning (OML) <d-cite key="khurram_javed_meta-learning_2019"></d-cite> have only been shown to continually learn classification tasks with a few hundred classes.
+Generative meta-continual learning (GeMCL) <d-cite key="mohammadamin_banayeeanzade_generative_2021"></d-cite>, however, is a meta-CL algorithm that is theoretically immune to CF and has been shown to be superior to OML in terms of performance.
+
+Neither GeMCL nor OML has yet been tested on tasks with 1,000 classes, nor have they been compared to actual CL algorithms at scale.
+These algorithms have also not been tested at scale on other datasets.
+Meta-CL and CL algorithms should be able to handle longer streams than those found in traditional deep-learning scenarios.
+
+The purpose of this blog is to compare the meta-CL algorithms GeMCL and OML to the CL algorithm REMIND <d-cite key="vedaldi_remind_2020"></d-cite> and the Offline approach on the CASIA Chinese Handwriting Database (CASIA) <d-cite key="liu_casia_2011"></d-cite> on 1,000-way-10-shot classification tasks.
+Furthermore, since OML and GeMCL are meta-learning algorithms, they should be able to generalise to other datasets. We also aim to train OML and GeMCL on the CASIA dataset and see if they generalise to the Omniglot dataset <d-cite key="lake_human-level_2015"></d-cite> on 1,000-way-10-shot classification tasks as well.
+
+We aim to see whether there are any benefits to using meta-learning approaches or whether one should simply stick to standard CL methods at scale. The roadmap to our destination is as follows: we first begin by explaining what CL is and introduce the REMIND algorithm, which has been shown to be computationally efficient compared to other CL algorithms <d-cite key="harun_how_2023"></d-cite>. Our next stop covers meta-learning and the meta-CL algorithms: OML and GeMCL. Following that, we conduct experiments on the 1,000-way-10-shot tasks and present our findings and thoughts.
 
 
 ## Background
@@ -275,7 +282,7 @@ Therefore, the order in which we learn the classes does not matter. We can learn
 
 ## Experiments
 
-Our training process follows the approach follows Lee et al.'s <d-cite key="lee_learning_2024"></d-cite> approach. This training process is described in the Method section. We adapted their official implementation for our experiments; the code is available [here](https://anonymous.4open.science/r/SB-MCL-B28E/README.md).
+Our training process follows the approach of Lee et al. <d-cite key="lee_learning_2024"></d-cite>, which is detailed in the Method section. We adapted their official implementation for our experiments; the code is available at our [anonymised repository](https://anonymous.4open.science/r/SB-MCL-B28E/README.md).
 
 ### Datasets
 The following datasets are used in these experiments: CASIA Chinese Handwriting Database (CASIA) <d-cite key="liu_casia_2011"></d-cite> and the Omniglot <d-cite key="lake_human-level_2015"></d-cite> dataset. The CASIA dataset consists of 7,356 handwritten characters or classes: 7,185 Chinese characters and 171 symbols (such as punctuation marks and English letters). Since the CASIA dataset is used to meta-train the meta-CL algorithms, we split the classes into meta-training and meta-testing sets. We reserve 5,356 classes for meta-training and 2,000 classes for meta-testing.
@@ -357,8 +364,8 @@ form of forgetting occurs, as its accuracy increases for the most recently learn
 ## Discussion
 We found it quite challenging to improve REMIND's performance. We also did not make use of augmentation during replay in our experiments, as we did not see any improvement in performance with it. One hypothesis for improving REMIND's performance is that allowing layers of our neural network to be plastic could help.
 
-Figures 7 and 9 suggest that some forgetting occurs in OML. Kwon et al. <d-cite key="kwon_lifelearner_2024"></d-cite> make use of latent replay to mitigate forgetting in meta-CL (specifically ANML <d-cite key="beaulieu_learning_2020"></d-cite>) and achieve high accuracy on audio and image datasets. The replays are compressed using Sparse Bitmap and PQ. They picked ANML over OML due to it achieving higher accuracy during evaluation.
-However, as mentioned before, if one just fine-tunes the last layer of OML, performance improves. Javed and White <d-cite key="khurram_javed_meta-learning_2019"></d-cite> point out in the OML repo that with this change, they actually match the performance of ANML. In our preliminary experiments, we also found that OML where we only fine-tune the last layer matches ANML. Hence our choice to just focus on OML. It would then be interesting to apply Kwon et al.'s approach to this version of OML to see how it performs at scale, and compare this approach to GeMCL, REMIND, and the Offline approach.
+Figures 7 and 9 suggest that some forgetting occurs in OML. Kwon et al. <d-cite key="kwon_lifelearner_2024"></d-cite> make use of latent replay to mitigate forgetting in meta-CL, specifically in ANML <d-cite key="beaulieu_learning_2020"></d-cite>, which is another MAML-based meta-CL method. This approach achieved high accuracy on audio and image datasets. The replays are compressed using Sparse Bitmap and PQ. They chose ANML over OML because it achieved higher accuracy during evaluation.
+However, as mentioned before, if one just fine-tunes the last layer of OML during meta-testing, performance improves. Javed and White <d-cite key="khurram_javed_meta-learning_2019"></d-cite> point out in the OML repo that with this change, they actually match the performance of ANML. In our preliminary experiments, we also found that OML where we only fine-tune the last layer matches ANML. Hence why we decided to just focus on OML. It would then be interesting to apply Kwon et al.'s approach to this version of OML to see how it performs at scale, and compare this approach to GeMCL, REMIND, and the Offline approach.
 
 Lee et al. <d-cite key="lee_learning_2024"></d-cite> pointed out that the fact that GeMCL is immune to CF means that one can focus on improving the representation ability of the encoder.
 The main focus now with GeMCL is training an encoder such that it can generalise to different datasets and output meaningful representations when applied to a new domain.
