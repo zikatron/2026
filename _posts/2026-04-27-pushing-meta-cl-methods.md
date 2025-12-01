@@ -155,7 +155,7 @@ The REMIND algorithm works by freezing certain parts of the neural network durin
 
 The encoder takes in an image, $$x_i$$, and outputs a feature representation, $$z_i$$. The representation $$z_i$$ is then encoded using PQ. We then sample $$r$$ encoded examples from the replay buffer, including their respective labels.
 
-We then form a batch comprising the current encoded $$z_i$$ (and its respective label) and the $$r$$ sampled examples. We decode this batch to form the decoded batch $$\mathcal{Z}$$ with $$r+1$$ samples. We use this decoded batch Z and the corresponding labels Y to update the MLP layers via SGD.
+We then form a batch comprising the current encoded $$z_i$$ (and its respective label) and the $$r$$ sampled examples. We decode this batch to form the decoded batch $$\mathcal{Z}$$ with $$r+1$$ samples. We use this decoded batch $$\mathcal{Z}$$ and the corresponding labels $$Y$$ to update the MLP layers via SGD.
 
 After updating the MLP layers, we store the encoded $$z_i$$ and its label in the replay buffer. When the buffer is full, we randomly remove one sample from the most represented class to make space. This process continues until all classes are learned sequentially.
 
@@ -218,7 +218,7 @@ $$
 The phase of learning $$\omega^*$$ is known as meta-training, whereas evaluating the learned $$\omega^*$$ is known as meta-testing.
 
 #### $$N$$-way-$$K$$-shot Learning
-One common setup for meta-learning in supervised classification is $$N$$-way-$$K$$-shot learning. In $$N$$-way-$$K$$-shot learning, we have $$N$$ classes each with $$K$$ training examples.
+One common setup for meta-learning in supervised classification is $$N$$-way-$$K$$-shot learning <d-cite key="huisman_survey_2021"><\d-cite>. In $$N$$-way-$$K$$-shot learning, we have $$N$$ classes each with $$K$$ training examples.
 Therefore, the training dataset for an $$N$$-way-$$K$$-shot learning episode should have $$N\cdot K$$ total examples. The meta-training stage and meta-testing stage have disjoint labels; i.e., the classes used during meta-training are not the same as the classes used in meta-testing.
 
 The training examples form the support set, while examples used for evaluation form the query set
