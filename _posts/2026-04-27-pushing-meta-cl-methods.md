@@ -232,7 +232,7 @@ The goal of using various tasks or $$N$$-way-$$K$$-shot episodes is to acquire a
 Online aware Meta-Learning (OML) <d-cite key="khurram_javed_meta-learning_2019"></d-cite> is a modification of the model-agnostic meta-learning (MAML) framework <d-cite key="finn_model-agnostic_2017"></d-cite>, adapted for continual learning. MAML is an algorithm that meta-learns a neural network initialisation that allows for the neural network to learn new tasks with just a few gradient updates. However, if you apply MAML's approach directly in the continual learning setting, all parameters are updated, which leads to CF. To address this, OML freezes the earlier layers of the neural network during the inner-loop steps, and only updates the later layers.
 
 Figure 4 illustrates the OML process. The neural network consists of an encoder and MLP layers.
-The encoder produces a feature representation of the input and represents our meta-learner; tts parameters $$\omega$$ are therefore the meta-parameters. The MLP parameters $$\theta$$ are updated during inner-loop adaptation and are also called fast weights.
+The encoder produces a feature representation of the input and represents our meta-learner; its parameters $$\omega$$ are therefore the meta-parameters. The MLP parameters $$\theta$$ are updated during inner-loop adaptation and are also called fast weights.
 
 The OML process involves sampling an $$N$$-way-$$K$$-shot episode. In the inner loop, we process each sample from the support set sequentially.
 We feed a sample through the encoder, and then the MLP makes a prediction.
