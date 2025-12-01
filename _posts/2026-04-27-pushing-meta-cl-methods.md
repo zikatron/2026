@@ -218,7 +218,7 @@ $$
 The phase of learning $$\omega^*$$ is known as meta-training, whereas evaluating the learned $$\omega^*$$ is known as meta-testing.
 
 #### $$N$$-way-$$K$$-shot Learning
-One common setup for meta-learning in supervised classification is $$N$$-way-$$K$$-shot learning <d-cite key="huisman_survey_2021"><\d-cite>. In $$N$$-way-$$K$$-shot learning, we have $$N$$ classes each with $$K$$ training examples.
+One common setup for meta-learning in supervised classification is $$N$$-way-$$K$$-shot learning <d-cite key="huisman_survey_2021"></d-cite>. In $$N$$-way-$$K$$-shot learning, we have $$N$$ classes each with $$K$$ training examples.
 Therefore, the training dataset for an $$N$$-way-$$K$$-shot learning episode should have $$N\cdot K$$ total examples. The meta-training stage and meta-testing stage have disjoint labels; i.e., the classes used during meta-training are not the same as the classes used in meta-testing.
 
 The training examples form the support set, while examples used for evaluation form the query set
