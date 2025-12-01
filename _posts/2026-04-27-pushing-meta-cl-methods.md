@@ -221,7 +221,7 @@ The phase of learning $$\omega^*$$ is known as meta-training, whereas evaluating
 One common setup for meta-learning in supervised classification is $$N$$-way-$$K$$-shot learning <d-cite key="huisman_survey_2021"></d-cite>. In $$N$$-way-$$K$$-shot learning, we have $$N$$ classes each with $$K$$ training examples.
 Therefore, the training dataset for an $$N$$-way-$$K$$-shot learning episode should have $$N\cdot K$$ total examples. The meta-training stage and meta-testing stage have disjoint labels; i.e., the classes used during meta-training are not the same as the classes used in meta-testing.
 
-The training examples form the support set, while examples used for evaluation form the query set
+The training examples form the support set, while examples used for evaluation form the query set.
 Thus, the base-learner uses the support set to learn a task, then is evaluated on the query set. The loss on the query set is then used to update $$\omega$$.
 
 The goal of using various tasks or $$N$$-way-$$K$$-shot episodes is to acquire a $$\omega^*$$ that can a) help the base-learning learn a specific skill quickly and b) be used across multiple tasks.
