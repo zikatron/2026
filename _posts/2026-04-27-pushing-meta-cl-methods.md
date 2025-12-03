@@ -110,14 +110,14 @@ $$
 $$
 
 Now we can move on to the three main scenarios in CL <d-cite key="gido_m_van_de_ven_three_2019"></d-cite>: task-incremental learning (task-IL), domain-incremental learning (domain-IL) and class-incremental learning (class-IL) <d-footnote>There are more scenarios in CL. For more information on the different types of scenarios, we recommend the survey by Wang et al. <d-cite key="wang_comprehensive_2024"></d-cite>.</d-footnote>.
-In task-IL, the task ID is provided during both training and testing. This means one can train their model with task-specific components. As van de Ven et al. <d-cite key="gido_m_van_de_ven_three_2019"></d-cite> point out, task-IL is the easiest scenario in CL. Domain-IL differs in that the task ID is not provided during testing; however, the model does not have to infer what task it is solving. Class-IL also does not have the task ID at training or test time; however, it must infer what task it is solving. To better explain these scenarios, we will take a look at the following example based on the example provided by van de Ven et al. <d-cite key="gido_m_van_de_ven_three_2019"></d-cite>.
+In task-IL, the task ID is provided during both training and testing. This means one can train their model with task-specific components. As Van de Ven et al. <d-cite key="gido_m_van_de_ven_three_2019"></d-cite> point out, task-IL is the easiest scenario in CL. Domain-IL differs in that the task ID is not provided during testing; however, the model does not have to infer what task it is solving. Class-IL also does not have the task ID at training or test time; however, it must infer what task it is solving. To better explain these scenarios, we will take a look at the following example based on the example provided by Van de Ven et al. <d-cite key="gido_m_van_de_ven_three_2019"></d-cite>.
 
 {% include figure.liquid path="assets/img/2026-04-27-pushing-meta-cl-methods/task_visualization_separated_seed42.png" class="img-fluid" %}
 <div class="caption">
     Figure 1. An example of the characters from the CASIA database broken up into tasks. Example based off <d-cite key="gido_m_van_de_ven_three_2019"></d-cite>.
 </div>
 
-Figure 1 shows 3 tasks using 6 characters from the CASIA database. Each task in the figure contains different characters, but within each task they are labelled as Class 1 or Class 2.
+Figure 1 shows three tasks using 6 characters from the CASIA database. Each task in the figure contains different characters, but within each task they are labelled as Class 1 or Class 2.
 In the task-IL scenario, the model is given a task and the task ID and must predict either Class 1 or Class 2.
 For domain-IL, the model is given a character but is not told the task ID, yet must still distinguish between Class 1 and Class 2.
 The class-IL scenario also withholds the task ID; however, the model must now output the specific character identity (e.g., Character 1 through Character 6), rather than simply outputting Class 1 or Class 2.
@@ -125,7 +125,7 @@ In the work, we focus on the class-IL.
 
 CL aims to mitigate CF, which occurs when data is learned sequentially instead of simultaneously. For example, if Tasks 1 through 3 from Figure 1 are learned simultaneously, we expect the model to perform well on all three tasks.
 
-However, if we naively learn the three tasks sequentially, starting with Task 1 and ending with Task 3, CF often occurs because each of the three tasks have different minima.
+However, if we naively learn the three tasks sequentially, starting with Task 1 and ending with Task 3, CF often occurs because the three tasks have different minima.
 This occurs because the weights learned for Task 1 are overridden as the model updates its parameters to optimise for Task 2. Similarly the parameters learned for Task 2 are overridden when we learn Task 3. If all tasks are presented simultaneously, there is a tug-of-war on the parameters, whereby the gradient from each task pulls the model toward a minimum that yields reasonable performance across all three tasks <d-cite key="raia_hadsell_embracing_2020"></d-cite>.
 
 Usually in CL, the model cannot access the data from previously seen tasks. One category of CL methods known as replay-based methods aims to tackle this by storing a subset of past examples shown during training. Typically, as the learner learns a task, examples from that task are stored in a replay buffer. The model then replays examples stored while learning new classes.
@@ -244,7 +244,7 @@ We then calculate the loss on that prediction and use SGD to update the fast wei
 </div>
 
 At meta-test time, the encoder is fixed, and we reinitialise the MLP layers as we are learning classes not seen during training.
-This reinitialisation happens during meta-training as well: we reinitialise the MLP kayers before starting each new outer-loop episode. This ensures the training setup closely matches meta-testing conditions: where each class encountered is new and the network must learn from scratch using the meta-learned representation.
+This reinitialisation happens during meta-training as well: we reinitialise the MLP layers before starting each new outer-loop episode. This ensures the training setup closely matches meta-testing conditions: where each class encountered is new and the network must learn from scratch using the meta-learned representation.
 
 When performing the meta-update, we back-propagate through the inner loop, requiring second-order derivatives to update the encoder <d-footnote> One can use a first-order approximation instead. </d-footnote>.
 Additionally, the inner loop and outer loop typically require different learning rates. For OML, practitioners commonly perform a hyperparameter search for the optimal inner-loop learning rate at meta-test time, as OML is highly sensitive to this value. Ironically, as Irie et al. <d-cite key ="irie_metalearning_2024"></d-cite> observed:
@@ -377,7 +377,7 @@ The NetScore metric allows us to combine the accuracy, memory, parameters, and c
 Meta-CL algorithms are still CL algorithms, and it is important to see if we obtain any benefit in terms of computational efficiency by performing meta-learning at scale.
 
 ## Conclusion
-In this work, we aimed to see how well meta-CL algorithms perform on tasks with extended data streams, specifically on 1,000-way-10-shot classification tasks. We found that on the CASIA dataset, OML and GeMCL outperform the CL algorithm REMIND and match the performance of the Offline learner. This suggests that there is a benefit to applying meta-learning to CL, as OML and GeMCL match the performance of the Offline learner.
-However, when tested on the Omniglot dataset, after having been trained on the on the CASIA dataset, we observed a drop in performance. Both meta-CL algorithms performed worse than the Offline learner in this case, and OML performed worse than REMIND as well.
+In this work, we aimed to see how well meta-CL algorithms perform on tasks with extended data streams, specifically on 1,000-way-10-shot classification tasks. We found that on the CASIA dataset, OML and GeMCL outperform the CL algorithm REMIND and match the performance of the Offline learner. This suggests that there is a benefit to applying meta-learning to CL.
+However, when OML and GeMCL were tested on the Omniglot dataset, after having been trained on the on the CASIA dataset, we observed a drop in performance. Both meta-CL algorithms performed worse than the Offline learner in this case, and OML performed worse than REMIND as well.
 
-Our results also suggest that OML might be suffering from CF. Applying Kwon et al.'s <d-cite key="kwon_lifelearner_2024"></d-cite> approach to OML could help mitigate the CF. We also struggled to get REMIND to perform well. We hypothesised that perhaps making more layers plastic could improve performance of the REMIND algorithm. Having seen that meta-CL can scale to 1,000 classes, future work should focus on how computationally efficient they are and whether they can generalise to new domains.
+Our results also suggest that OML might be suffering from CF, though future work could apply Kwon et al.'s <d-cite key="kwon_lifelearner_2024"></d-cite> approach to OML to help mitigate CF. We also struggled to get REMIND to perform well. We hypothesised that perhaps making more layers plastic could improve performance of the REMIND algorithm. Having seen that meta-CL can scale to 1,000 classes, future work should focus on how computationally efficient they are and whether they can generalise to new domains.
